@@ -8,18 +8,17 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
 }, { timestamps: true });
 
-// Using 'function' instead of '=>' is the key
-// 1. Remove 'next' from the arguments
+
 userSchema.pre('save', async function (this: any) {
-    // 2. Simply 'return' if the password hasn't changed
+   
     if (!this.isModified('password')) return;
     
     try {
-        // 3. Await the hash and assign it directly
+       
         this.password = await bcrypt.hash(this.password, 10);
-        // No next() call needed here
+       
     } catch (error: any) {
-        // If there's an error, just throw it; Mongoose will catch it
+       
         throw error;
     }
 });
