@@ -13,10 +13,10 @@ Authentication: Bcrypt for password hashing.
 📂 Project Structure
 
 authsys/
-├── client/          # Frontend assets (HTML, CSS, JS)
-├── server/          # Backend TypeScript source code
-│   ├── configs/     # Database configuration
-│   ├── models/      # Mongoose schemas
-│   ├── middleware/  # Auth & error handling
-│   └── server.ts    # Entry point
-└── .gitignore       # Files excluded from GitHub
+├── client/ # Frontend assets (HTML, CSS, JS)
+├── server/ # Backend TypeScript source code
+│ ├── configs/ # Database configuration
+│ ├── models/ # Mongoose schemas
+│ ├── middleware/ # Auth & error handling
+│ └── server.ts # Entry point
+└── .gitignore # Files excluded from GitHub
