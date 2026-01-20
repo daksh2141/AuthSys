@@ -389,64 +389,37 @@
     <div class="logo-tagline">Secure Authentication Platform</div>
   </div>
 
-  <!-- Login Form -->
-  <div class="form-wrapper active" id="loginForm">
-    <h1>Welcome back</h1>
-    <p class="subtitle">Sign in to your account</p>
+  <div id="authSection">
+    <div class="form-wrapper active" id="loginForm">
+        <h1>Welcome back</h1>
+        <p class="subtitle">Sign in to your account</p>
+        <form id="login">
+            <button type="submit" class="btn">Sign In</button>
+        </form>
+        <div class="message" id="loginMessage"></div>
+        <div class="switch-text">
+            Don't have an account? <a href="#" onclick="showRegister(); return false;">Create one</a>
+        </div>
+    </div>
 
-    <form id="login">
-      <div class="form-group">
-        <label for="loginEmail">Email Address</label>
-        <input type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="email"/>
-      </div>
-
-      <div class="form-group">
-        <label for="loginPassword">Password</label>
-        <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password"/>
-      </div>
-
-      <button type="submit" class="btn">Sign In</button>
-    </form>
-
-    <div class="message" id="loginMessage"></div>
-
-    <div class="switch-text">
-      Don't have an account? <a href="#" onclick="showRegister(); return false;">Create one</a>
+    <div class="form-wrapper hidden" id="registerForm">
+        <h1>Create account</h1>
+        <p class="subtitle">Get started in seconds</p>
+        <form id="register">
+            <button type="submit" class="btn">Create Account</button>
+        </form>
+        <div class="message" id="registerMessage"></div>
+        <div class="switch-text">
+            Already have an account? <a href="#" onclick="showLogin(); return false;">Sign in</a>
+        </div>
     </div>
   </div>
 
-  <!-- Register Form -->
-  <div class="form-wrapper hidden" id="registerForm">
-    <h1>Create account</h1>
-    <p class="subtitle">Get started in seconds</p>
-
-    <form id="register">
-      <div class="form-group">
-        <label for="regUsername">Username</label>
-        <input type="text" id="regUsername" placeholder="Enter name" required autocomplete="username"/>
-      </div>
-
-      <div class="form-group">
-        <label for="regEmail">Email Address</label>
-        <input type="email" id="regEmail" placeholder="you@example.com" required autocomplete="email"/>
-      </div>
-
-      <div class="form-group">
-        <label for="regPassword">Password</label>
-        <input type="password" id="regPassword" placeholder="Create a strong password" required autocomplete="new-password"/>
-      </div>
-
-      <button type="submit" class="btn">Create Account</button>
-    </form>
-
-    <div class="message" id="registerMessage"></div>
-
-    <div class="switch-text">
-      Already have an account? <a href="#" onclick="showLogin(); return false;">Sign in</a>
-    </div>
+  <div id="dashboardSection" style="display: none; text-align: center; padding: 20px 40px 40px;">
+    <h1 id="welcomeText">Welcome back!</h1>
+    <p id="userEmailDisplay" style="color: #9ca3af; margin-bottom: 24px; font-size: 0.95rem;"></p>
+    <button id="logoutBtn" class="btn" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); width: 100%;">Log Out</button>
   </div>
-
-  <button id="logoutBtn">Log Out</button>
 </div>
 
 <script>
@@ -541,6 +514,7 @@ document.getElementById('login').addEventListener('submit', async (e) => {
     if (res.ok && data.token) {
   // Save the token to LocalStorage
   localStorage.setItem('token', data.token); 
+  localStorage.setItem('userEmail', email);
   
   showMessage(loginMsg, "Welcome back! Login successful.", 'success');
   setTimeout(() => {
@@ -567,15 +541,33 @@ logoutBtn.addEventListener('click', () => {
 
 function checkAuth() {
   const token = localStorage.getItem('token');
-  const isLoggedIn = !!token; // Returns true if token exists
+  const userEmail = localStorage.getItem('userEmail'); // Make sure you save this on login
   
-  logoutBtn.style.display = isLoggedIn ? 'block' : 'none';
-  
-  if (isLoggedIn) {
-    document.getElementById('loginForm').classList.add('hidden');
-    // You could also fetch user profile data here using the token
+  const authSection = document.getElementById('authSection');
+  const dashboardSection = document.getElementById('dashboardSection');
+  const userEmailDisplay = document.getElementById('userEmailDisplay');
+
+  if (token) {
+    // User is logged in: Hide forms, show dashboard
+    authSection.style.display = 'none';
+    dashboardSection.style.display = 'block';
+    if (userEmail) userEmailDisplay.innerText = userEmail;
+  } else {
+    // User is logged out: Show forms, hide dashboard
+    authSection.style.display = 'block';
+    dashboardSection.style.display = 'none';
   }
 }
+
+// Updated Logout Click Listener
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('userEmail');
+  location.reload(); // Refresh to reset the UI
+});
+
+// Call it on page load
+checkAuth();
 
 // Update Logout to clear the token
 logoutBtn.addEventListener('click', () => {
