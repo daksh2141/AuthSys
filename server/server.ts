@@ -8,7 +8,10 @@ import connectDB from './configs/db.js';
 import User from './models/User.js';
 await connectDB();
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ["https://auth-sys-nine.vercel.app"], 
+  credentials: true
+}));
 app.use(express.json());
 
 
